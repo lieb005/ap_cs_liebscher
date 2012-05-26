@@ -17,7 +17,7 @@ lines
 ...
 
 .Name
--image:http://mark005.hostoi.com/public_html/cs/img/Name.png
+-image:http://mark005.hostoi.com/cs/img/Name.png
 -(Mark Liebscher)
 -This is my preferred Name
 
