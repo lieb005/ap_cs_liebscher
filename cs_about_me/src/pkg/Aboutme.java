@@ -11,6 +11,7 @@ import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JApplet;
 import javax.swing.JComponent;
@@ -24,6 +25,7 @@ public class Aboutme extends JApplet
 {
 	JTabbedPane								tabbedPane	= new JTabbedPane ();
 	LinkedHashMap<String, Vector<Object>>	contents	= new LinkedHashMap<String, Vector<Object>> ();
+	boolean									standalone	= false;
 
 	/**
 	 * @param args
@@ -31,13 +33,18 @@ public class Aboutme extends JApplet
 	public static void main (String[] args)
 	{
 		JFrame f = new JFrame ("About Me");
-		Aboutme a = new Aboutme ();
+		Aboutme a = new Aboutme (true);
 		f.add (a);
 		f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
 		a.init ();
 		a.start ();
 		f.setVisible (true);
 		f.pack ();
+	}
+
+	public Aboutme (boolean bool)
+	{
+		standalone = bool;
 	}
 
 	@Override
@@ -53,7 +60,19 @@ public class Aboutme extends JApplet
 		super.start ();
 		try
 		{
-			URL codeUrl = getCodeBase ();
+			URL codeUrl = null;
+			if (!standalone)
+			{
+				codeUrl = getCodeBase ();
+			}
+			else
+			{
+				codeUrl = Aboutme.class.getProtectionDomain().getCodeSource().getLocation();
+			}
+			if (codeUrl == null)
+			{
+				throw new FileNotFoundException ();
+			}
 			File contentFile = new File (
 					new URL (codeUrl.getProtocol (), codeUrl.getHost (),
 							codeUrl.getFile () + "pkg/contents.txt").toURI ());
@@ -65,31 +84,45 @@ public class Aboutme extends JApplet
 			while (contentReader.ready ())
 			{
 				temp = contentReader.readLine ();
-				if (temp == "" || temp.length () < 3 || skip)
-					continue;
-				else if (temp.substring (0, 3) == "...")
-					skip = !skip;
-				else if (temp.substring (0, 1) == "#")
-					continue;
-				else if (temp.substring (0, 1) == ".")
+				// System.out.println (temp);
+				if (temp == "" || temp.length () < 3)
 				{
+					System.out.println ("Skipping " + temp);
+					continue;
+				}
+				else if (temp.substring (0, 3).contains ("..."))
+				{
+					System.out.println ("... seen");
+					skip = !skip;
+				}
+				else if (temp.substring (0, 1) == "#" || skip)
+				{
+					System.out.println ("Skipping " + temp);
+					continue;
+				}
+				else if (temp.charAt (0) == '.')
+				{
+					System.out.println ("Found category " + temp);
 					element = new Vector<Object> ();
 					contents.put (temp.substring (1), element);
 				}
-				else if (temp.substring (0, 1) == "-")
+				else if (temp.charAt (0) == '-')
 				{
+					System.out.println ("Found content " + temp);
 					element.add (temp.substring (1));
 				}
 			}
 			Vector<Vector<Object>> values = new Vector<Vector<Object>> (
 					contents.values ());
-			String[] keys = new String[contents.keySet ().toArray().length];
+			String[] keys = new String[contents.keySet ().toArray ().length];
 			keys = contents.keySet ().toArray (keys);
 			JComponent tempComp = null;
 			JPanel tempPanel = null;
 			for (int i = 0; i < keys.length; i++)
 			{
 				tempPanel = new JPanel ();
+				tempPanel
+						.setLayout (new BoxLayout (tempPanel, BoxLayout.Y_AXIS));
 				for (int j = 0; j < values.get (i).size (); j++)
 				{
 					String rawContent = (String) values.get (i).get (j);
