@@ -1,0 +1,20 @@
+#comment
+...
+comment
+on
+multiple
+lines
+...
+
+...
+#example
+.Title
+-content
+-test
+-image:file:///home/mark/file.jpg
+-text:http://www.website.de/image.bmp
+...
+#test
+.Test
+-content 1
+-content 2
