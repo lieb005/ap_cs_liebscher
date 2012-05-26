@@ -15,15 +15,30 @@ lines
 -image:file:///home/mark/file.jpg
 -text:http://www.website.de/image.bmp
 ...
-#test
-.Test
--content 1
--content 2
 
-.Hello World
--hello   
--world   
--how   
--are   
--you   
--today?   
+.Name
+-image:http://mark005.hostoi.com/public_html/cs/img/Name.png
+-(Mark Liebscher)
+-This is my preferred Name
+
+.Family
+-I live in a family of four consisting of
+-My Mom
+-My Dad
+-My little bother (two years, two months, two days younger than I)
+
+.Myself
+-I love to program, as you can see, and I have been doing it for a while.
+-I made this program in about 3 hours and it is completely dynamic.
+-
+-In the text file, you can customise the fields and it will dynamically add any text, 
+-images or text files to the display
+-I learn by Doing.
+-When I want to learn about something in java, I do it, I don't just read about it.
+
+.Definition
+-My definition of Computer Science is computer programming and the understanding of the workings of computers.
+
+.Why
+-I thought that it yould be a fun class to take, even though I already know Java.
+-I thought maybe I could learn more about it and get some Ideas.

@@ -40,6 +40,7 @@ public class Aboutme extends JApplet
 		a.start ();
 		f.setVisible (true);
 		f.pack ();
+		f.setSize (900, 300);
 	}
 
 	public Aboutme (boolean bool)
@@ -67,12 +68,10 @@ public class Aboutme extends JApplet
 			}
 			else
 			{
-				codeUrl = Aboutme.class.getProtectionDomain().getCodeSource().getLocation();
+				codeUrl = Aboutme.class.getProtectionDomain ().getCodeSource ()
+						.getLocation ();
 			}
-			if (codeUrl == null)
-			{
-				throw new FileNotFoundException ();
-			}
+			if (codeUrl == null) { throw new FileNotFoundException (); }
 			File contentFile = new File (
 					new URL (codeUrl.getProtocol (), codeUrl.getHost (),
 							codeUrl.getFile () + "pkg/contents.txt").toURI ());
@@ -126,12 +125,13 @@ public class Aboutme extends JApplet
 				for (int j = 0; j < values.get (i).size (); j++)
 				{
 					String rawContent = (String) values.get (i).get (j);
-					if (rawContent.substring (1, 5).contains ("text"))
+					System.out.println (rawContent);
+					if (rawContent.contains ("text:"))
 					{
 						BufferedReader read = new BufferedReader (
 								new FileReader (new File (
-										rawContent.substring ("-text:"
-												.length () - 1))));
+										rawContent.substring ("text:"
+												.length ()))));
 						String textContents = "";
 						while (read.ready ())
 						{
@@ -139,11 +139,13 @@ public class Aboutme extends JApplet
 						}
 						contents.get (keys[i]).set (j, textContents);
 					}
-					else if (rawContent.substring (1, 5).contains ("image"))
+					else if (rawContent.contains ("image:"))
 					{
-						ImageIcon img = new ImageIcon (
-								rawContent.substring ("-image:".length () - 1));
+						String urlString = rawContent.substring ("image:".length ());
+						URL imageURL = new URL (urlString);
+						ImageIcon img = new ImageIcon (imageURL);
 						contents.get (keys[i]).set (j, img);
+						System.out.println ("added image " + img.getDescription ());
 					}
 				}
 				Vector<Object> vect = contents.get (keys[i]);
