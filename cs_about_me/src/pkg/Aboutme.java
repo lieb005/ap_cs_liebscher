@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Vector;
@@ -72,11 +72,8 @@ public class Aboutme extends JApplet
 						.getLocation ();
 			}
 			if (codeUrl == null) { throw new FileNotFoundException (); }
-			File contentFile = new File (
-					new URL (codeUrl.getProtocol (), codeUrl.getHost (),
-							codeUrl.getFile () + "pkg/contents.txt").toURI ());
-			BufferedReader contentReader = new BufferedReader (new FileReader (
-					contentFile));
+			URL contentUrl = new URL("http", "mark005.hostoi.com", "/cs/applet/contents.conf");
+			BufferedReader contentReader = new BufferedReader (new InputStreamReader (contentUrl.openStream ()));
 			String temp;
 			boolean skip = false;
 			Vector<Object> element = new Vector<Object> ();
@@ -171,11 +168,6 @@ public class Aboutme extends JApplet
 				tabbedPane.addTab (keys[i], tempPanel);
 			}
 		} catch (MalformedURLException e)
-		{
-			System.out
-					.println ("There has been an internal error.  Please email me at mark005@pacbell.net with a full description of the problem and your OS.");
-			return;
-		} catch (URISyntaxException e)
 		{
 			System.out
 					.println ("There has been an internal error.  Please email me at mark005@pacbell.net with a full description of the problem and your OS.");
