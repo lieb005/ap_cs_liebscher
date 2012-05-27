@@ -18,6 +18,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
@@ -71,16 +72,20 @@ public class Aboutme extends JApplet
 				codeUrl = Aboutme.class.getProtectionDomain ().getCodeSource ()
 						.getLocation ();
 			}
-			if (codeUrl == null) { throw new FileNotFoundException (); }
-			URL contentUrl = new URL("http", "mark005.hostoi.com", "/cs/applet/contents.conf");
-			BufferedReader contentReader = new BufferedReader (new InputStreamReader (contentUrl.openStream ()));
+			if (codeUrl == null) { throw new FileNotFoundException (
+					"No Code Base Found."); }
+			// URL contentUrl = new URL("http", "mark005.hostoi.com",
+			// "/cs/applet/contents");
+			URL contentUrl = new URL (codeUrl.getProtocol (),
+					codeUrl.getHost (), codeUrl.getFile () + "pkg/contents");
+			BufferedReader contentReader = new BufferedReader (
+					new InputStreamReader (contentUrl.openStream ()));
 			String temp;
 			boolean skip = false;
 			Vector<Object> element = new Vector<Object> ();
 			while (contentReader.ready ())
 			{
 				temp = contentReader.readLine ();
-				// System.out.println (temp);
 				if (temp == "" || temp.length () < 3)
 				{
 					System.out.println ("Skipping " + temp);
@@ -123,26 +128,29 @@ public class Aboutme extends JApplet
 				{
 					String rawContent = (String) values.get (i).get (j);
 					System.out.println (rawContent);
-					if (rawContent.contains ("text:"))
+					if (rawContent.contains ("text:") && rawContent.charAt (0) == 't')
 					{
 						BufferedReader read = new BufferedReader (
-								new FileReader (new File (
-										rawContent.substring ("text:"
+								new FileReader (
+										new File (rawContent.substring ("text:"
 												.length ()))));
 						String textContents = "";
 						while (read.ready ())
 						{
-							textContents.concat (read.readLine () + "\n");
+							textContents += (read.readLine () + "\n");
 						}
 						contents.get (keys[i]).set (j, textContents);
+						System.out.println ("Read text " + textContents);
 					}
 					else if (rawContent.contains ("image:"))
 					{
-						String urlString = rawContent.substring ("image:".length ());
+						String urlString = rawContent.substring ("image:"
+								.length ());
 						URL imageURL = new URL (urlString);
 						ImageIcon img = new ImageIcon (imageURL);
 						contents.get (keys[i]).set (j, img);
-						System.out.println ("added image " + img.getDescription ());
+						System.out.println ("added image "
+								+ img.getDescription ());
 					}
 				}
 				Vector<Object> vect = contents.get (keys[i]);
@@ -155,8 +163,9 @@ public class Aboutme extends JApplet
 					}
 					else if ( ((String) vect.get (k)).contains ("\n"))
 					{
-						tempComp = new JTextArea ((String) vect.get (k));
-						((JTextArea) tempComp).setLineWrap (true);
+						JTextArea ta = new JTextArea ((String) vect.get (k));
+						ta.setLineWrap (false);
+						tempComp = new JScrollPane (ta);
 						tempPanel.add (tempComp);
 					}
 					else
@@ -169,18 +178,24 @@ public class Aboutme extends JApplet
 			}
 		} catch (MalformedURLException e)
 		{
-			System.out
-					.println ("There has been an internal error.  Please email me at mark005@pacbell.net with a full description of the problem and your OS.");
+			System.err
+					.println ("There has been an internal error.  Please email me at mark005@pacbell.net with a full description of the problem and your OS."
+							+ e.getMessage () + "\n");
+			e.printStackTrace ();
 			return;
 		} catch (FileNotFoundException e)
 		{
-			System.out
-					.println ("The File Cannot be Found.  Please email me at mark005@pacbell.net with a full description of the problem and your OS.");
+			System.err
+					.println ("The File Cannot be Found.  Please email me at mark005@pacbell.net with a full description of the problem and your OS (Including the output of the following message)."
+							+ e.getMessage () + "\n");
+			e.printStackTrace ();
 			return;
 		} catch (IOException e)
 		{
-			System.out
-					.println ("There has been an internal error.  Please email me at mark005@pacbell.net with a full description of the problem and your OS.");
+			System.err
+					.println ("There has been an internal error.  Please email me at mark005@pacbell.net with a full description of the problem and your OS."
+							+ e.getMessage () + "\n");
+			e.printStackTrace ();
 			return;
 		}
 		invalidate ();
