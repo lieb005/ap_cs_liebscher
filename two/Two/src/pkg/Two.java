@@ -75,7 +75,9 @@ public class Two extends JApplet
 				if (e.getKeyChar () == '\n')
 				{
 					e.consume ();
-					calculateButton.getActionListeners ()[0].actionPerformed (new ActionEvent (inTextField, ActionEvent.ACTION_LAST, null));
+					calculateButton.getActionListeners ()[0]
+							.actionPerformed (new ActionEvent (inTextField,
+									ActionEvent.ACTION_LAST, null));
 				}
 			}
 		});

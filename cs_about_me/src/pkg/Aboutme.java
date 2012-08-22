@@ -140,6 +140,7 @@ public class Aboutme extends JApplet
 							textContents += (read.readLine () + "\n");
 						}
 						contents.get (keys[i]).set (j, textContents);
+						read.close ();
 						System.out.println ("Read text " + textContents);
 					}
 					else if (rawContent.contains ("image:"))
